@@ -9,12 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VideoCallingApplication">
-        <activity android:name=".SignUpActivity"
-                            android:label="Sign Up"/>
-        <activity android:name=".LoginActivity"
-                            android:label="Login"/>
-        <activity android:name=".MainActivity"
-                            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        <activity android:name=".Dashboard"></activity>
+        <activity
+            android:name=".SignUpActivity"
+            android:label="Sign Up" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="Login" />
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

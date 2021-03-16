@@ -2,12 +2,15 @@ package com.example.videocallingapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
@@ -17,6 +20,7 @@ public class SignUpActivity extends AppCompatActivity {
     Button login, signUp;
 
     FirebaseAuth firebaseAuth;
+    FirebaseFirestore fireStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        fireStore = FirebaseFirestore.getInstance();
 
         email = findViewById(R.id.emailBox);
         password = findViewById(R.id.passwordBox);
@@ -39,9 +44,18 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void createAccount(String email, String password, String fullName) {
+        final User user = new User();
+        user.setEmail(email);
+        user.setName(fullName);
+        user.setPassword(password);
+
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(this, "Account is created", Toast.LENGTH_SHORT).show();
+                fireStore.collection("Users").document().set(user).addOnSuccessListener(Void -> {
+                    Toast.makeText(this, "Account is created", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                    finish();
+                });
             }
             else {
                 Toast.makeText(this, Objects.requireNonNull(task.getException()).getLocalizedMessage(), Toast.LENGTH_SHORT).show();
