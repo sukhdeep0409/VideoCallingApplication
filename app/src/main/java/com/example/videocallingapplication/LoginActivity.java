@@ -2,6 +2,8 @@ package com.example.videocallingapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -17,6 +19,8 @@ public class LoginActivity extends AppCompatActivity {
     Button login, signup;
 
     FirebaseAuth firebaseAuth;
+
+    ProgressDialog progressDialog;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Logging you in...");
 
         email = findViewById(R.id.emailBox);
         password = findViewById(R.id.passwordBox);
@@ -37,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         login.setOnClickListener(view -> {
+            progressDialog.show();
             signInAccount(email.getText().toString(), password.getText().toString());
         });
     }
@@ -44,7 +51,10 @@ public class LoginActivity extends AppCompatActivity {
     private void signInAccount(String email, String password) {
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
+                progressDialog.dismiss();
+                startActivity(new Intent(getApplicationContext(), Dashboard.class));
                 Toast.makeText(this, "Successfully Logged In", Toast.LENGTH_SHORT).show();
+                finish();
             }
             else {
                 Toast.makeText(this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
